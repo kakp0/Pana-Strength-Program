@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4-Week Pana Strength Program Generator & Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+        }
+        .card {
+            background-color: #1F2937; /* bg-gray-800 */
+            border-radius: 0.75rem; /* rounded-xl */
+            border: 1px solid #374151; /* border-gray-700 */
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .input-field {
+            background-color: #374151; /* bg-gray-700 */
+            border: 1px solid #4B5563; /* border-gray-600 */
+            color: #F9FAFB; /* text-gray-50 */
+        }
+        .input-field:focus {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            border-color: #2dd4bf; /* border-teal-400 */
+            box-shadow: 0 0 0 2px #111827, 0 0 0 4px #2dd4bf;
+        }
+        .table-header {
+            background-color: #374151; /* bg-gray-700 */
+            color: #D1D5DB; /* text-gray-300 */
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .teal-highlight {
+            color: #2dd4bf; /* text-teal-400 */
+        }
+        .btn {
+            background-color: #14B8A6; /* teal-500 */
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #0D9488; /* teal-600 */
+        }
+        .btn-secondary {
+            background-color: #374151; /* gray-700 */
+        }
+        .btn-secondary:hover {
+            background-color: #4B5563; /* gray-600 */
+        }
+    </style>
+</head>
+<body class="text-gray-200 p-4 sm:p-6 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+
+        <!-- Header -->
+        <div class="card p-6 mb-8 text-center">
+            <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">4-Week Powerlifting Program</h1>
+            <p class="text-gray-400">Enter your data below to calculate your program and track your progress.</p>
+        </div>
+
+        <!-- Data Management -->
+        <div class="card p-6 mb-8">
+            <h2 class="text-xl font-bold text-white mb-4">Data Management</h2>
+            <div class="flex flex-wrap gap-4">
+                <button id="export-data" class="btn">Export Progress (.txt)</button>
+                <div>
+                    <label for="import-file" class="btn btn-secondary cursor-pointer">Import Progress (.txt)</label>
+                    <input type="file" id="import-file" class="hidden" accept=".txt">
+                </div>
+            </div>
+             <p class="text-sm text-gray-500 mt-4">Your data is saved automatically in your browser. Use these buttons for manual backup or to transfer data.</p>
+        </div>
+
+        <!-- Inputs Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Starting Stats -->
+            <div class="card p-6">
+                <h2 class="text-xl font-bold text-white mb-4">Starting Stats</h2>
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-teal-400 mb-2">Initial One-Rep Maxes (1RM)</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label for="squat-max" class="block text-sm font-medium text-gray-300 mb-1">Squat (kg)</label>
+                                <input type="number" id="squat-max" class="data-input input-field w-full p-2 rounded-md" placeholder="180">
+                            </div>
+                            <div>
+                                <label for="bench-max" class="block text-sm font-medium text-gray-300 mb-1">Bench (kg)</label>
+                                <input type="number" id="bench-max" class="data-input input-field w-full p-2 rounded-md" placeholder="120">
+                            </div>
+                            <div>
+                                <label for="deadlift-max" class="block text-sm font-medium text-gray-300 mb-1">Deadlift (kg)</label>
+                                <input type="number" id="deadlift-max" class="data-input input-field w-full p-2 rounded-md" placeholder="220">
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-teal-400 mb-2">Body Weight (kg)</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                            <div>
+                                <label for="bw-week1" class="block text-sm font-medium text-gray-300 mb-1">Week 1</label>
+                                <input type="number" id="bw-week1" class="data-input input-field w-full p-2 rounded-md" placeholder="80.0">
+                            </div>
+                            <div>
+                                <label for="bw-week2" class="block text-sm font-medium text-gray-300 mb-1">Week 2</label>
+                                <input type="number" id="bw-week2" class="data-input input-field w-full p-2 rounded-md">
+                            </div>
+                            <div>
+                                <label for="bw-week3" class="block text-sm font-medium text-gray-300 mb-1">Week 3</label>
+                                <input type="number" id="bw-week3" class="data-input input-field w-full p-2 rounded-md">
+                            </div>
+                            <div>
+                                <label for="bw-week4" class="block text-sm font-medium text-gray-300 mb-1">Week 4</label>
+                                <input type="number" id="bw-week4" class="data-input input-field w-full p-2 rounded-md">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Final Results & Progress -->
+            <div class="card p-6">
+                <h2 class="text-xl font-bold text-white mb-4">Final Results</h2>
+                 <div class="space-y-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-teal-400 mb-2">Final One-Rep Maxes (1RM)</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label for="final-squat-max" class="block text-sm font-medium text-gray-300 mb-1">Squat (kg)</label>
+                                <input type="number" id="final-squat-max" class="data-input input-field w-full p-2 rounded-md" placeholder="190">
+                            </div>
+                            <div>
+                                <label for="final-bench-max" class="block text-sm font-medium text-gray-300 mb-1">Bench (kg)</label>
+                                <input type="number" id="final-bench-max" class="data-input input-field w-full p-2 rounded-md" placeholder="125">
+                            </div>
+                            <div>
+                                <label for="final-deadlift-max" class="block text-sm font-medium text-gray-300 mb-1">Deadlift (kg)</label>
+                                <input type="number" id="final-deadlift-max" class="data-input input-field w-full p-2 rounded-md" placeholder="230">
+                            </div>
+                        </div>
+                    </div>
+                    <button id="update-graphs" class="btn w-full sm:w-auto">Show Progress</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Progress Graphs -->
+        <div id="graphs-container" class="card p-6 mb-8 hidden">
+            <h2 class="text-xl sm:text-2xl font-bold text-white mb-6">Progress Visualization</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-center mb-2">1RM Progression (kg)</h3>
+                    <canvas id="maxesChart"></canvas>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-center mb-2">Body Weight Trend (kg)</h3>
+                    <canvas id="bodyweightChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Program Container -->
+        <main id="program-container" class="space-y-8">
+            <!-- Program will be generated here by JavaScript -->
+        </main>
+
+    </div>
+
+    <script>
+        // --- CHART INSTANCES ---
+        let maxesChart = null;
+        let bodyweightChart = null;
+
+        // --- PROGRAM DATA (Unchanged) ---
+        const programData = [
+          // Week 1: Accumulation
+          [
+            { name: 'Squat', lift: 'squat', sets: [{ sets: 4, reps: 5, p: 0.78 }] },
+            { name: 'Bench', lift: 'bench', sets: [{ sets: 4, reps: 5, p: 0.78 }] },
+            { name: 'Deadlift', lift: 'deadlift', sets: [{ sets: 2, reps: 5, p: 0.78 }, { sets: 1, reps: 5, p: 0.70 }] },
+            { name: 'Squat', lift: 'squat', sets: [{ sets: 3, reps: 3, p: 0.85 }] },
+            { name: 'Bench', lift: 'bench', sets: [{ sets: 3, reps: 3, p: 0.85 }] },
+            { name: 'Deadlift', lift: 'deadlift', sets: [{ sets: 1, reps: 3, p: 0.85 }, { sets: 1, reps: 3, p: 0.80 }, { sets: 1, reps: 3, p: 0.70 }] },
+          ],
+          // Week 2: Accumulation (Updated)
+          [
+            { name: 'Squat', lift: 'squat', sets: [{ sets: 1, reps: 5, p: 0.78 }, { sets: 1, reps: 5, p: 0.85 }, { sets: 1, reps: 5, p: 0.82 }, { sets: 1, reps: 5, p: 0.78 }] },
+            { name: 'Bench', lift: 'bench', sets: [{ sets: 1, reps: 5, p: 0.78 }, { sets: 2, reps: 5, p: 0.85 }, { sets: 1, reps: 5, p: 0.78 }] },
+            { name: 'Deadlift', lift: 'deadlift', sets: [{ sets: 1, reps: 5, p: 0.78 }, { sets: 1, reps: 5, p: 0.85 }, { sets: 1, reps: 5, p: 0.78 }] },
+            { name: 'Squat', lift: 'squat', sets: [{ sets: 1, reps: 3, p: 0.85 }, { sets: 1, reps: 3, p: 0.90 }, { sets: 1, reps: 3, p: 0.85 }] },
+            { name: 'Bench', lift: 'bench', sets: [{ sets: 1, reps: 3, p: 0.85 }, { sets: 1, reps: 3, p: 0.90 }, { sets: 1, reps: 3, p: 0.85 }] },
+            { name: 'Deadlift', lift: 'deadlift', sets: [{ sets: 1, reps: 3, p: 0.80 }, { sets: 1, reps: 3, p: 0.90 }, { sets: 1, reps: 3, p: 0.80 }] },
+          ],
+          // Week 3: Peaking (Updated)
+          [
+            { name: 'Squat', lift: 'squat', sets: [{ sets: 1, reps: 3, p: 0.85 }, { sets: 1, reps: 3, p: 0.90 }, { sets: 1, reps: 3, p: 0.85 }] },
+            { name: 'Bench', lift: 'bench', sets: [{ sets: 1, reps: 3, p: 0.85 }, { sets: 1, reps: 3, p: 0.90 }, { sets: 1, reps: 3, p: 0.85 }] },
+            { name: 'Deadlift', lift: 'deadlift', sets: [{ sets: 2, reps: 3, p: 0.85 }, { sets: 1, reps: 3, p: 0.75 }] },
+            { name: 'Squat', lift: 'squat', sets: [{ sets: 1, reps: 3, p: 0.80 }, { sets: 1, reps: 1, p: 0.88 }, { sets: 1, reps: 1, p: 0.90 }, { sets: 2, reps: 5, p: 0.75 }] },
+            { name: 'Bench', lift: 'bench', sets: [{ sets: 1, reps: 3, p: 0.88 }, { sets: 1, reps: 1, p: 0.90 }, { sets: 1, reps: 1, p: 0.92 }, { sets: 2, reps: 5, p: 0.75 }] },
+            { name: 'Deadlift', lift: 'deadlift', sets: [{ sets: 1, reps: 3, p: 0.80 }, { sets: 1, reps: 1, p: 0.88 }, { sets: 1, reps: 1, p: 0.90 }, { sets: 2, reps: 5, p: 0.75 }] },
+          ],
+          // Week 4: Peaking / Max Out
+          [
+            { name: 'Squat', lift: 'squat', sets: [{ sets: 1, reps: 3, p: 0.88 }, { sets: 2, reps: 3, p: 0.80 }] },
+            { name: 'Bench', lift: 'bench', sets: [{ sets: 1, reps: 3, p: 0.88 }, { sets: 2, reps: 3, p: 0.80 }] },
+            { name: 'Deadlift', lift: 'deadlift', sets: [{ sets: 1, reps: 3, p: 0.85 }, { sets: 2, reps: 3, p: 0.75 }] },
+            { name: 'Squat', lift: 'maxout' },
+            { name: 'Bench', lift: 'maxout' },
+            { name: 'Deadlift', lift: 'maxout' },
+          ],
+        ];
+
+
+        // --- DOM ELEMENTS ---
+        const programContainer = document.getElementById('program-container');
+        const graphsContainer = document.getElementById('graphs-container');
+
+        // --- DATA MANAGEMENT FUNCTIONS ---
+
+        /**
+         * Gathers all data from the input fields into a single object.
+         * @returns {object} The application's current state.
+         */
+        function getAppState() {
+            return {
+                initialMaxes: {
+                    squat: parseFloat(document.getElementById('squat-max').value) || 0,
+                    bench: parseFloat(document.getElementById('bench-max').value) || 0,
+                    deadlift: parseFloat(document.getElementById('deadlift-max').value) || 0,
+                },
+                bodyWeights: [
+                    parseFloat(document.getElementById('bw-week1').value) || 0,
+                    parseFloat(document.getElementById('bw-week2').value) || 0,
+                    parseFloat(document.getElementById('bw-week3').value) || 0,
+                    parseFloat(document.getElementById('bw-week4').value) || 0,
+                ],
+                finalMaxes: {
+                    squat: parseFloat(document.getElementById('final-squat-max').value) || 0,
+                    bench: parseFloat(document.getElementById('final-bench-max').value) || 0,
+                    deadlift: parseFloat(document.getElementById('final-deadlift-max').value) || 0,
+                }
+            };
+        }
+        
+        /**
+         * Populates all input fields from a state object.
+         * @param {object} state The application state to load.
+         */
+        function setAppState(state) {
+            if (!state) return;
+            // Set initial maxes
+            document.getElementById('squat-max').value = state.initialMaxes?.squat || '';
+            document.getElementById('bench-max').value = state.initialMaxes?.bench || '';
+            document.getElementById('deadlift-max').value = state.initialMaxes?.deadlift || '';
+            // Set body weights
+            document.getElementById('bw-week1').value = state.bodyWeights?.[0] || '';
+            document.getElementById('bw-week2').value = state.bodyWeights?.[1] || '';
+            document.getElementById('bw-week3').value = state.bodyWeights?.[2] || '';
+            document.getElementById('bw-week4').value = state.bodyWeights?.[3] || '';
+            // Set final maxes
+            document.getElementById('final-squat-max').value = state.finalMaxes?.squat || '';
+            document.getElementById('final-bench-max').value = state.finalMaxes?.bench || '';
+            document.getElementById('final-deadlift-max').value = state.finalMaxes?.deadlift || '';
+        }
+
+        /**
+         * Saves the current application state to the browser's local storage.
+         */
+        function saveStateToLocal() {
+            const state = getAppState();
+            localStorage.setItem('powerliftingProgress', JSON.stringify(state));
+            console.log('State saved.');
+        }
+
+        /**
+         * Loads the application state from local storage and updates the UI.
+         */
+        function loadStateFromLocal() {
+            const savedState = localStorage.getItem('powerliftingProgress');
+            if (savedState) {
+                console.log('Saved state found. Loading...');
+                const state = JSON.parse(savedState);
+                setAppState(state);
+                // After loading, refresh calculations and graphs
+                calculateAndDisplayWeights();
+                updateGraphs();
+            } else {
+                console.log('No saved state found.');
+            }
+        }
+
+        /**
+         * Exports the current state to a .txt file for download.
+         */
+        function exportStateToFile() {
+            const state = getAppState();
+            const stateString = JSON.stringify(state, null, 2); // Pretty print JSON
+            const blob = new Blob([stateString], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'powerlifting-progress.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        /**
+         * Handles the file import process.
+         * @param {Event} event The file input change event.
+         */
+        function importStateFromFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const state = JSON.parse(e.target.result);
+                    setAppState(state);
+                    // After importing, save to local storage and refresh UI
+                    saveStateToLocal();
+                    calculateAndDisplayWeights();
+                    updateGraphs();
+                    alert('Progress imported successfully!');
+                } catch (error) {
+                    console.error('Failed to parse import file:', error);
+                    alert('Error: Could not import file. Make sure it is a valid progress file.');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+
+        // --- CORE PROGRAM FUNCTIONS ---
+
+        const roundToNearest = (value, nearest) => Math.round(value / nearest) * nearest;
+
+        function generateProgramStructure() {
+            programData.forEach((week, weekIndex) => {
+                const weekNumber = weekIndex + 1;
+                const phase = weekNumber <= 2 ? 'Accumulation' : 'Peaking';
+                const weekSection = document.createElement('section');
+                weekSection.className = 'card p-4 sm:p-6';
+                const weekHeader = document.createElement('h2');
+                weekHeader.className = 'text-xl sm:text-2xl font-bold text-white mb-4';
+                weekHeader.innerHTML = `Week ${weekNumber}: <span class="teal-highlight">${phase}</span>`;
+                weekSection.appendChild(weekHeader);
+                const table = document.createElement('table');
+                table.className = 'w-full text-left';
+                table.innerHTML = `
+                    <thead class="table-header">
+                        <tr>
+                            <th class="p-3 w-1/6 hidden sm:table-cell">Day</th>
+                            <th class="p-3 w-1/6">Lift</th>
+                            <th class="p-3 w-2/6">Sets & Reps</th>
+                            <th class="p-3 w-2/6">Working Weight (kg)</th>
+                        </tr>
+                    </thead>
+                `;
+                const tableBody = document.createElement('tbody');
+                week.forEach((day, dayIndex) => {
+                    const row = document.createElement('tr');
+                    row.className = 'border-b border-gray-700';
+                    let setsRepsHTML = day.lift === 'maxout' ? 'Test your 1 Rep Max' : day.sets.map(s => `${s.sets}x${s.reps} @ ${Math.round(s.p * 100)}%`).join('<br>');
+                    row.innerHTML = `
+                        <td class="p-3 font-semibold hidden sm:table-cell">Day ${dayIndex + 1}</td>
+                        <td class="p-3 font-semibold">${day.name}</td>
+                        <td class="p-3 text-sm text-gray-400">${setsRepsHTML}</td>
+                        <td class="p-3 font-semibold text-white" id="w${weekIndex}-d${dayIndex}-output">-</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                const restRow = document.createElement('tr');
+                restRow.innerHTML = `<td class="p-3 font-semibold hidden sm:table-cell">Day 7</td><td class="p-3 font-semibold text-gray-500" colspan="3">Rest</td>`;
+                tableBody.appendChild(restRow);
+                table.appendChild(tableBody);
+                weekSection.appendChild(table);
+                programContainer.appendChild(weekSection);
+            });
+        }
+
+        function calculateAndDisplayWeights() {
+            const maxes = getAppState().initialMaxes;
+            programData.forEach((week, weekIndex) => {
+                week.forEach((day, dayIndex) => {
+                    const outputCell = document.getElementById(`w${weekIndex}-d${dayIndex}-output`);
+                    if (!outputCell) return;
+                    if (day.lift === 'maxout') {
+                        outputCell.innerHTML = '<strong class="teal-highlight">MAX OUT</strong>';
+                        return;
+                    }
+                    const liftMax = maxes[day.lift];
+                    if (!liftMax || liftMax <= 0) {
+                        outputCell.textContent = '-';
+                        return;
+                    }
+                    const weightStrings = day.sets.map(s => {
+                        const weight = roundToNearest(liftMax * s.p, 2.5);
+                        return `${s.sets}x${s.reps} @ <span class="teal-highlight">${weight} kg</span>`;
+                    });
+                    outputCell.innerHTML = weightStrings.join('<br>');
+                });
+            });
+        }
+        
+        // --- GRAPHING FUNCTION ---
+
+        /**
+         * Updates or creates the progress graphs.
+         */
+        function updateGraphs() {
+            const state = getAppState();
+            const hasFinalMaxes = Object.values(state.finalMaxes).some(v => v > 0);
+            const hasBodyWeights = state.bodyWeights.some(v => v > 0);
+
+            if (!hasFinalMaxes && !hasBodyWeights) {
+                graphsContainer.classList.add('hidden');
+                return;
+            }
+            graphsContainer.classList.remove('hidden');
+            
+            const chartOptions = {
+                plugins: { legend: { labels: { color: '#D1D5DB' } } },
+                scales: { 
+                    y: { ticks: { color: '#9CA3AF' }, grid: { color: '#374151' } }, 
+                    x: { ticks: { color: '#9CA3AF' }, grid: { color: 'transparent' } } 
+                }
+            };
+            
+            // 1. Maxes Chart (Bar)
+            if (maxesChart) maxesChart.destroy();
+            const maxesCtx = document.getElementById('maxesChart').getContext('2d');
+            maxesChart = new Chart(maxesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Squat', 'Bench Press', 'Deadlift'],
+                    datasets: [{
+                        label: 'Initial 1RM',
+                        data: Object.values(state.initialMaxes),
+                        backgroundColor: 'rgba(75, 85, 99, 0.8)', // gray-600
+                        borderColor: '#4B5563',
+                        borderWidth: 1
+                    }, {
+                        label: 'Final 1RM',
+                        data: Object.values(state.finalMaxes),
+                        backgroundColor: 'rgba(20, 184, 166, 0.8)', // teal-500
+                        borderColor: '#0D9488',
+                        borderWidth: 1
+                    }]
+                },
+                options: chartOptions
+            });
+
+            // 2. Bodyweight Chart (Line)
+            if(bodyweightChart) bodyweightChart.destroy();
+            const bwCtx = document.getElementById('bodyweightChart').getContext('2d');
+            bodyweightChart = new Chart(bwCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Body Weight (kg)',
+                        data: state.bodyWeights.map(w => w > 0 ? w : null), // Use null for missing data
+                        fill: false,
+                        borderColor: '#2dd4bf', // teal-400
+                        tension: 0.1
+                    }]
+                },
+                options: chartOptions
+            });
+        }
+
+
+        // --- EVENT LISTENERS ---
+        document.querySelectorAll('.data-input').forEach(input => {
+            input.addEventListener('input', () => {
+                calculateAndDisplayWeights();
+                saveStateToLocal();
+            });
+        });
+        
+        document.getElementById('export-data').addEventListener('click', exportStateToFile);
+        document.getElementById('import-file').addEventListener('change', importStateFromFile);
+        document.getElementById('update-graphs').addEventListener('click', updateGraphs);
+
+
+        // --- INITIALIZATION ---
+        window.onload = () => {
+            generateProgramStructure();
+            loadStateFromLocal(); // This will also call calculate and updateGraphs
+        };
+
+    </script>
+</body>
+</html>
